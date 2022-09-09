@@ -29,4 +29,3 @@ function ^(p::Polynomial, n::Int)
     end
     return out
 end
-

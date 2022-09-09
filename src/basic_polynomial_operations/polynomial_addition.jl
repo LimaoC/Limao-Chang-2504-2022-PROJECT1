@@ -14,10 +14,10 @@ function +(p::Polynomial, t::Term)
     if t.degree > degree(p)
         push!(p, t)
     else
-        if !iszero(p.terms[t.degree + 1]) #+1 is due to indexing
-            p.terms[t.degree + 1] += t
+        if !iszero(p.terms[t.degree+1])  # + 1 is due to indexing
+            p.terms[t.degree+1] += t
         else
-            p.terms[t.degree + 1] = t
+            p.terms[t.degree+1] = t
         end
     end
 
@@ -39,5 +39,5 @@ end
 """
 Add a polynomial and an integer.
 """
-+(p::Polynomial, n::Int) = p + Term(n,0)
-+(n::Int, p::Polynomial) = p + Term(n,0)
++(p::Polynomial, n::Int) = p + Term(n, 0)
++(n::Int, p::Polynomial) = p + Term(n, 0)
