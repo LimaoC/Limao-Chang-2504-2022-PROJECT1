@@ -130,9 +130,12 @@ function show(io::IO, p::Polynomial)
         print(io, "0")
     else
         n = length(p.terms)
-        for (i, t) in enumerate(p.terms)
+        for (i, t) in enumerate(reverse(p.terms))  # print terms in descending degree order
             if !iszero(t)
-                print(io, t, i != n ? " + " : "")
+                # if first term, omit ± signs
+                # if negative coefficient, detach negative sign from term and place in
+                # front of term
+                print(io, i == 1 ? t : (t.coeff < 0 ? " - $(string(t)[2:end])" : " + $t"))
             end
         end
     end

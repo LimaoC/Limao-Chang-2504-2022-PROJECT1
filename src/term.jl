@@ -39,7 +39,16 @@ one(::Type{Term})::Term = Term(1, 0)
 """
 Show a term.
 """
-show(io::IO, t::Term) = print(io, "$(t.coeff)⋅x^$(t.degree)")  # \cdot + [TAB]
+show(io::IO, t::Term) = begin
+    # omit degree for terms with a degree of 1, omit x for constant terms
+    x = t.degree > 1 ? "x^$(t.degree)" : (t.degree == 1 ? "x" : "")
+    # omit coefficient if it is ±1, except if it is a constant term
+    coefficient = begin
+        ((t.degree > 0 && abs(t.coeff) != 1) || t.degree == 0) ? t.coeff :
+                                                                 (t.coeff == 1 ? "" : "-")
+    end
+    print(io, "$coefficient$x")
+end
 
 ########################
 # Queries about a term #
