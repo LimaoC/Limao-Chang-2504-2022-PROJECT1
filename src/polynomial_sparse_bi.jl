@@ -1,7 +1,8 @@
 #############################################################################
 #############################################################################
 #
-# This file defines the sparse polynomial type with several operations 
+# This file defines the sparse polynomial (big int) type with several
+# operations 
 #                                                                               
 #############################################################################
 #############################################################################
@@ -11,21 +12,22 @@
 ####################################
 
 """
-A PolynomialSparse type - designed to be for sparse polynomials with integer coefficients.
+A PolynomialSparseBI type - designed to be for sparse polynomials with big integer
+coefficients.
 """
-struct PolynomialSparse <: Polynomial
+struct PolynomialSparseBI <: Polynomial
     # A zero packed vector of terms
     # Only non-zero terms (i.e., terms with zero coefficient) are stored, and terms are
     # assumed to be in order with first term having degree 0, second degree 1, and so forth
     # until the degree of the polynomial. The last term is assumed to be non-zero except
     # for the zero polynomial where the vector is of length 1.
-    terms::Vector{Term{Int64}}
+    terms::Vector{Term{BigInt}}
 
     # Inner constructor of 0 polynomial
-    PolynomialSparse() = new([zero(Term)])
+    PolynomialSparseBI() = new([zero(Term{BigInt})])
 
     # Inner constructor of polynomial based on arbitrary list of terms
-    function PolynomialSparse(vt::Vector{Term{Int64}})
+    function PolynomialSparseBI(vt::Vector{Term{BigInt}})
         # Filter the vector so that there is not more than a single zero term
         vt = filter((t) -> !iszero(t), vt)
         if isempty(vt)
@@ -35,12 +37,17 @@ struct PolynomialSparse <: Polynomial
         terms = filter((t) -> t.coeff != 0, vt)  # filter out zero terms
         return new(terms)
     end
+
+    function PolynomialSparseBI(vt::Vector{Term})
+        vt = map((t) -> Term(big(t.coeff), big(t.degree)), vt)
+        return PolynomialSparseBI(vt)
+    end
 end
 
 """
-Construct a (sparse) polynomial with a single term.
+Construct a (sparse, big integer) polynomial with a single term.
 """
-PolynomialSparse(t::Term) = PolynomialSparse([t])
+PolynomialSparseBI(t::Term) = PolynomialSparseBI([Term(big(t.coeff), big(t.degree))])
 
 ################################
 # Pushing and popping of terms #
@@ -51,7 +58,8 @@ Push a new term into the polynomial.
 """
 # Note that ideally this would throw and error if pushing another term of degree that is
 # already in the polynomial
-function push!(p::PolynomialSparse, t::Term)
+function push!(p::PolynomialSparseBI, t::Term)
+    t = Term(big(t.coeff), big(t.degree))  # convert to Term{BigInt} before pushing
     if t.degree > degree(p)
         push!(p.terms, t)
     else

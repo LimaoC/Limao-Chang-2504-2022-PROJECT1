@@ -13,12 +13,12 @@
 """
 A term.
 """
-struct Term  # structs are immutable by default
-    coeff::Int
-    degree::Int
-    function Term(coeff::Int, degree::Int)
+struct Term{T<:Integer}  # structs are immutable by default
+    coeff::T
+    degree::T
+    function Term(coeff::T, degree::T) where {T<:Integer}
         degree < 0 && error("Degree must be non-negative")
-        coeff != 0 ? new(coeff, degree) : new(coeff, 0)
+        coeff != 0 ? new{T}(coeff, degree) : new{T}(coeff, 0)
     end
 end
 
@@ -26,11 +26,13 @@ end
 Creates the zero term.
 """
 zero(::Type{Term})::Term = Term(0, 0)
+(zero(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(0), T(0))
 
 """
 Creates the unit term.
 """
 one(::Type{Term})::Term = Term(1, 0)
+(one(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(1), T(0))
 
 ###########
 # Display #
@@ -70,6 +72,15 @@ end
 Evaluate a term at a point x.
 """
 evaluate(t::Term, x::T) where {T<:Number} = t.coeff * x^t.degree
+
+###########################
+# Queries about two terms #
+###########################
+
+"""
+Check if two terms are equal.
+"""
+==(t1::Term, t2::Term)::Bool = t1.coeff == t2.coeff && t1.degree == t2.degree
 
 ##########################
 # Operations with a term #

@@ -158,7 +158,7 @@ evaluate(f::Polynomial, x::T) where {T<:Number} = sum(evaluate(t, x) for t in f)
 """
 Check if the polynomial is zero.
 """
-iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)]
+iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)] || p.terms == [Term(big(0), big(0))]
 
 #################################################################
 # Transformation of the polynomial to create another polynomial #
