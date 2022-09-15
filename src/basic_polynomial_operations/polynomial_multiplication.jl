@@ -9,8 +9,8 @@
 """
 Multiply two polynomials.
 """
-function *(p1::Polynomial, p2::Polynomial)::Polynomial
-    p_out = Polynomial()
+function *(p1::P, p2::P)::Polynomial where {P<:Polynomial}
+    p_out = P()
     for t in p1
         new_summand = (t * p2)
         p_out = p_out + new_summand

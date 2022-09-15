@@ -1,7 +1,7 @@
 #############################################################################
 #############################################################################
 #
-# This file defines the polynomial type with several operations 
+# This file defines the abstract polynomial type with several operations 
 #                                                                               
 #############################################################################
 #############################################################################
@@ -13,43 +13,11 @@
 """
 A Polynomial type - designed to be for polynomials with integer coefficients.
 """
-struct Polynomial
-
-    # A zero packed vector of terms
-    # Terms are assumed to be in order with first term having degree 0, second degree 1,
-    # and so fourth until the degree of the polynomial. The leading term (i.e. last) is
-    # assumed to be non-zero except for the zero polynomial where the vector is of length 1.
-    # Note: at positions where the coefficient is 0, the power of the term is also 0 (this
-    # is how the Term type is designed)
-    terms::Vector{Term}
-
-    # Inner constructor of 0 polynomial
-    Polynomial() = new([zero(Term)])
-
-    # Inner constructor of polynomial based on arbitrary list of terms
-    function Polynomial(vt::Vector{Term})
-
-        # Filter the vector so that there is not more than a single zero term
-        vt = filter((t) -> !iszero(t), vt)
-        if isempty(vt)
-            vt = [zero(Term)]
-        end
-
-        max_degree = maximum((t) -> t.degree, vt)
-        terms = [zero(Term) for i in 0:max_degree] # First set all terms with zeros
-
-        # now update based on the input terms
-        for t in vt
-            terms[t.degree+1] = t # + 1 accounts for 1-indexing
-        end
-        return new(terms)
-    end
-end
+abstract type Polynomial end
 
 """
 This function maintains the invariant of the Polynomial type so that there are no zero
-terms beyond the highest
-non-zero term.
+terms beyond the highest non-zero term.
 """
 function trim!(p::Polynomial)::Polynomial
     i = length(p.terms)
@@ -65,47 +33,49 @@ function trim!(p::Polynomial)::Polynomial
 end
 
 """
-Construct a polynomial with a single term.
-"""
-Polynomial(t::Term) = Polynomial([t])
-
-"""
 Construct a polynomial of the form x^p-x.
 """
-cyclotonic_polynomial(p::Int) = Polynomial([Term(1, p), Term(-1, 0)])
+(cyclotonic_polynomial(::Type{P}, p::Int)::P) where {P<:Polynomial} = begin
+    P([Term(1, p), Term(-1, 0)])
+end
 
 """
 Construct a polynomial of the form x-n.
 """
-linear_monic_polynomial(n::Int) = Polynomial([Term(1, 1), Term(-n, 0)])
+linear_monic_polynomial(::Type{P}, n::Int) where {P<:Polynomial} = begin
+    P([Term(1, 1), Term(-n, 0)])
+end
 
 """
 Construct a polynomial of the form x.
 """
-x_poly() = Polynomial(Term(1, 1))
+x_poly(::Type{P}) where {P<:Polynomial} = P(Term(1, 1))
 
 """
 Creates the zero polynomial.
 """
-zero(::Type{Polynomial})::Polynomial = Polynomial()
+# Note: in a parametric function, brackets need to wrap the function declaration if we want
+# to specify a return type.
+# Reference: https://discourse.julialang.org/t/how-to-declare-parametric-with-return-type-of-a-function/40288
+(zero(::Type{P})::P) where {P<:Polynomial} = P()
 
 """
 Creates the unit polynomial.
 """
-one(::Type{Polynomial})::Polynomial = Polynomial(one(Term))
+(one(::Type{P})::P) where {P<:Polynomial} = P(one(Term))
 one(p::Polynomial) = one(typeof(p))
 
 """
 Generates a random polynomial.
 """
-function rand(::Type{Polynomial};
+function rand(::Type{P};
     degree::Int=-1,
     terms::Int=-1,
     max_coeff::Int=100,
     mean_degree::Float64=5.0,
     prob_term::Float64=0.7,
     monic=false,
-    condition=(p) -> true)
+    condition=(p) -> true)::P where {P<:Polynomial}
 
     while true
         _degree = degree == -1 ? rand(Poisson(mean_degree)) : degree
@@ -113,7 +83,7 @@ function rand(::Type{Polynomial};
         degrees = vcat(sort(sample(0:_degree-1, _terms, replace=false)), _degree)
         coeffs = rand(1:max_coeff, _terms + 1)
         monic && (coeffs[end] = 1)
-        p = Polynomial([Term(coeffs[i], degrees[i]) for i in 1:length(degrees)])
+        p = P([Term(coeffs[i], degrees[i]) for i in 1:length(degrees)])
         condition(p) && return p
     end
 end
@@ -130,11 +100,11 @@ function show(io::IO, p::Polynomial)
         print(io, "0")
     else
         n = length(p.terms)
-        for (i, t) in enumerate(reverse(p.terms))  # print terms in descending degree order
+        # print terms in descending degree order
+        for (i, t) in enumerate(reverse(p.terms))
             if !iszero(t)
                 # if first term, omit ± signs
-                # if negative coefficient, detach negative sign from term and place in
-                # front of term
+                # if negative coefficient, detach negative sign from term 
                 print(io, i == 1 ? t : (t.coeff < 0 ? " - $(string(t)[2:end])" : " + $t"))
             end
         end
@@ -185,42 +155,6 @@ Evaluate the polynomial at a point `x`.
 """
 evaluate(f::Polynomial, x::T) where {T<:Number} = sum(evaluate(t, x) for t in f)
 
-################################
-# Pushing and popping of terms #
-################################
-
-"""
-Push a new term into the polynomial.
-"""
-# Note that ideally this would throw and error if pushing another term of degree that is
-# already in the polynomial
-function push!(p::Polynomial, t::Term)
-    if t.degree <= degree(p)
-        p.terms[t.degree+1] = t
-    else
-        append!(p.terms, zeros(Term, t.degree - degree(p) - 1))
-        push!(p.terms, t)
-    end
-    return p
-end
-
-"""
-Pop the leading term out of the polynomial. When polynomial is 0, keep popping out 0.
-"""
-function pop!(p::Polynomial)::Term
-    popped_term = pop!(p.terms) # last element popped is leading coefficient
-
-    while !isempty(p.terms) && iszero(last(p.terms))
-        pop!(p.terms)
-    end
-
-    if isempty(p.terms)
-        push!(p.terms, zero(Term))
-    end
-
-    return popped_term
-end
-
 """
 Check if the polynomial is zero.
 """
@@ -233,13 +167,13 @@ iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)]
 """
 The negative of a polynomial.
 """
--(p::Polynomial) = Polynomial(map((pt) -> -pt, p.terms))
+-(p::P) where {P<:Polynomial} = P(map((pt) -> -pt, p.terms))
 
 """
 Create a new polynomial which is the derivative of the polynomial.
 """
-function derivative(p::Polynomial)::Polynomial
-    der_p = Polynomial()
+function derivative(p::P)::P where {P<:Polynomial}
+    der_p = P()
     for term in p
         der_term = derivative(term)
         !iszero(der_term) && push!(der_p, der_term)
@@ -264,7 +198,7 @@ end
 #################################
 
 """
-Check if two polynomials are the same
+Check if two polynomials are the same.
 """
 ==(p1::Polynomial, p2::Polynomial)::Bool = p1.terms == p2.terms
 
@@ -287,8 +221,8 @@ Subtraction of two polynomials.
 """
 Multiplication of polynomial and term.
 """
-*(t::Term, p1::Polynomial)::Polynomial = begin
-    iszero(t) ? Polynomial() : Polynomial(map((pt) -> t * pt, p1.terms))
+(*(t::Term, p1::P)::P) where {P<:Polynomial} = begin
+    iszero(t) ? P() : P(map((pt) -> t * pt, p1.terms))
 end
 *(p1::Polynomial, t::Term)::Polynomial = t * p1
 
@@ -303,7 +237,9 @@ Integer division of a polynomial by an integer.
 
 Warning this may not make sense if n does not divide all the coefficients of p.
 """
-÷(p::Polynomial, n::Int) = (prime) -> Polynomial(map((pt) -> ((pt ÷ n)(prime)), p.terms))
+÷(p::P, n::Int) where {P<:Polynomial} = begin
+    (prime) -> P(map((pt) -> ((pt ÷ n)(prime)), p.terms))
+end
 
 """
 Take the mod of a polynomial with an integer.

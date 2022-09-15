@@ -13,7 +13,7 @@ Returns a vector of tuples of (irreducible polynomials (mod p), multiplicity) su
 their product of the list (mod p) is f. Irreducibles are fixed points on the function
 factor.
 """
-function factor(f::Polynomial, prime::Int)::Vector{Tuple{Polynomial,Int}}
+function factor(f::P, prime::Int)::Vector{Tuple{Polynomial,Int}} where {P<:Polynomial}
     # Cantor Zassenhaus factorization
 
     f_modp = mod(f, prime)
@@ -47,7 +47,7 @@ function factor(f::Polynomial, prime::Int)::Vector{Tuple{Polynomial,Int}}
     end
 
     # Append the leading coefficient as well
-    push!(ret_val, (leading(f_modp).coeff * one(Polynomial), 1))
+    push!(ret_val, (leading(f_modp).coeff * one(P), 1))
 
     return ret_val
 end
@@ -76,10 +76,10 @@ Given a square free polynomial `f` returns a list, `g` such that `g[k]` is a pro
 irreducible polynomials of degree `k` for `k` in 1,...,degree(f) ÷ 2, such that the product
 of the list (mod `prime`) is equal to `f` (mod `prime`).
 """
-function dd_factor(f::Polynomial, prime::Int)::Array{Polynomial}
-    x = x_poly()
+function dd_factor(f::P, prime::Int)::Array{Polynomial} where {P<:Polynomial}
+    x = x_poly(P)
     w = deepcopy(x)
-    g = Array{Polynomial}(undef, degree(f)) # Array of polynomials indexed by degree
+    g = Array{P}(undef, degree(f)) # Array of polynomials indexed by degree
 
     # Looping over degrees
     for k in 1:degree(f)
@@ -89,7 +89,7 @@ function dd_factor(f::Polynomial, prime::Int)::Array{Polynomial}
     end
 
     # edge case for final factor
-    f != one(Polynomial) && push!(g, f)
+    f != one(P) && push!(g, f)
 
     return g
 end
@@ -99,14 +99,14 @@ Distinct degree split.
 
 Returns a list of irreducible polynomials of degree `d` so that the product of that list (mod prime) is the polynomial `f`.
 """
-function dd_split(f::Polynomial, d::Int, prime::Int)::Vector{Polynomial}
+function dd_split(f::P, d::Int, prime::Int)::Vector{Polynomial} where {P<:Polynomial}
     f = mod(f, prime)
     degree(f) == d && return [f]
     degree(f) == 0 && return []
-    w = rand(Polynomial, degree=d, monic=true)
+    w = rand(P, degree=d, monic=true)
     w = mod(w, prime)
     n_power = (prime^d - 1) ÷ 2
-    g = gcd(pow_mod(w, n_power, prime) - one(Polynomial), f, prime)
+    g = gcd(pow_mod(w, n_power, prime) - one(P), f, prime)
     ḡ = (f ÷ g)(prime) # g\bar + [TAB]
     return vcat(dd_split(g, d, prime), dd_split(ḡ, d, prime))
 end

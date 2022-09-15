@@ -9,7 +9,7 @@
 """
 Add a polynomial and a term.
 """
-function +(p::Polynomial, t::Term)
+function +(p::PolynomialDense, t::Term)
     p = deepcopy(p)
     if t.degree > degree(p)
         push!(p, t)
@@ -21,6 +21,26 @@ function +(p::Polynomial, t::Term)
         end
     end
 
+    return trim!(p)
+end
+function +(p::PolynomialSparse, t::Term)
+    p = deepcopy(p)
+    if t.degree > degree(p)
+        push!(p, t)
+    else
+        # find where we should store this term
+        index = findfirst(term -> term.degree >= t.degree, p.terms)
+        if index == nothing
+            # insertion term is smaller than any other term we have; insert at start
+            insert!(p.terms, 1, t)
+        elseif t.degree < p.terms[index].degree
+            # term of this degree doesn't yet exist so insert a new term
+            insert!(p.terms, index, t)
+        else
+            # term of this degree already exists so add to existing term
+            p.terms[index] += t
+        end
+    end
     return trim!(p)
 end
 +(t::Term, p::Polynomial) = p + t

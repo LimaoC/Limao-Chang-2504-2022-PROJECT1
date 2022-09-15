@@ -13,15 +13,15 @@ f = q*g + r
 
 p is a prime
 """
-function divide(num::Polynomial, den::Polynomial)
+function divide(num::P, den::P) where {P<:Polynomial}
     function division_function(p::Int)
         f, g = mod(num, p), mod(den, p)
         degree(f) < degree(num) && return nothing
         iszero(g) && throw(DivideError())
-        q = Polynomial()
+        q = P()
         prev_degree = degree(f)
         while degree(f) ≥ degree(g)
-            h = Polynomial((leading(f) ÷ leading(g))(p))  #syzergy 
+            h = P((leading(f) ÷ leading(g))(p))  #syzergy 
             f = mod((f - h * g), p)
             q = mod((q + h), p)
             prev_degree == degree(f) && break
