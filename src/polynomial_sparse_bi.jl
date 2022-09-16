@@ -38,7 +38,7 @@ struct PolynomialSparseBI <: Polynomial
         return new(terms)
     end
 
-    function PolynomialSparseBI(vt::Vector{Term})
+    function PolynomialSparseBI(vt::Vector{Term{T}}) where {T<:Integer}
         vt = map((t) -> Term(big(t.coeff), big(t.degree)), vt)
         return PolynomialSparseBI(vt)
     end
