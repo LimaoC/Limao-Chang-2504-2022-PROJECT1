@@ -47,7 +47,7 @@ end
 """
 Construct a (sparse, big integer) polynomial with a single term.
 """
-PolynomialSparseBI(t::Term) = PolynomialSparseBI([Term(big(t.coeff), big(t.degree))])
+PolynomialSparseBI(t::Term) = PolynomialSparseBI([t])
 
 ################################
 # Pushing and popping of terms #
