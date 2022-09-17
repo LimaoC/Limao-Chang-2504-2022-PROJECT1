@@ -39,7 +39,7 @@ struct PolynomialSparseBI <: Polynomial
     end
 
     function PolynomialSparseBI(vt::Vector{Term{T}}) where {T<:Integer}
-        vt = map((t) -> Term(big(t.coeff), big(t.degree)), vt)
+        vt = map((t) -> Term(big(t.coeff), t.degree), vt)
         return PolynomialSparseBI(vt)
     end
 end
@@ -59,7 +59,7 @@ Push a new term into the polynomial.
 # Note that ideally this would throw and error if pushing another term of degree that is
 # already in the polynomial
 function push!(p::PolynomialSparseBI, t::Term)
-    t = Term(big(t.coeff), big(t.degree))  # convert to Term{BigInt} before pushing
+    t = Term(big(t.coeff), t.degree)  # convert to Term{BigInt} before pushing
     if t.degree > degree(p)
         push!(p.terms, t)
     else

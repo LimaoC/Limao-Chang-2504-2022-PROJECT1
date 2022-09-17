@@ -44,7 +44,7 @@ function +(p::PolynomialSparse, t::Term)
     return trim!(p)
 end
 function +(p::PolynomialSparseBI, t::Term)
-    t = Term(big(t.coeff), big(t.degree))  # convert to Term{BigInt} before addition
+    t = Term(big(t.coeff), t.degree)  # convert to Term{BigInt} before addition
     p = deepcopy(p)
     if t.degree > degree(p)
         push!(p, t)

@@ -15,8 +15,8 @@ A term.
 """
 struct Term{T<:Integer}  # structs are immutable by default
     coeff::T
-    degree::T
-    function Term(coeff::T, degree::T) where {T<:Integer}
+    degree::Int64
+    function Term(coeff::T, degree::Int64) where {T<:Integer}
         degree < 0 && error("Degree must be non-negative")
         coeff != 0 ? new{T}(coeff, degree) : new{T}(coeff, 0)
     end
@@ -26,13 +26,13 @@ end
 Creates the zero term.
 """
 zero(::Type{Term})::Term = Term(0, 0)
-(zero(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(0), T(0))
+(zero(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(0), 0)
 
 """
 Creates the unit term.
 """
 one(::Type{Term})::Term = Term(1, 0)
-(one(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(1), T(0))
+(one(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(1), 0)
 
 ###########
 # Display #
