@@ -64,6 +64,7 @@ function +(p::PolynomialSparseBI, t::Term)
     end
     return trim!(p)
 end
++(p::PolynomialModP, t::Term) = mod(p + mod(t, p.prime), p.prime)
 +(t::Term, p::Polynomial) = p + t
 
 """

@@ -25,6 +25,9 @@ function extended_euclid_alg(a::P, b::P, prime::Int) where {P<:Polynomial}
     @assert mod(s * a + t * b - g, prime) == 0
     return g, s, t
 end
+extended_euclid_alg(a::PolynomialModP, b::PolynomialModP, prime::Int) = begin
+    return extended_euclid_alg(a.polynomial, b.polynomial, prime)
+end
 
 """
 The GCD of two polynomials modulo prime.
