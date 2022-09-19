@@ -28,6 +28,7 @@ end
 ###########
 function show(io::IO, p::PolynomialModP)
     show(io, p.polynomial)
+    print(io, " (mod $(p.prime))")
 end
 
 ################################
