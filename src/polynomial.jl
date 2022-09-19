@@ -263,12 +263,4 @@ end
 """
 Power of a polynomial mod prime.
 """
-function pow_mod(p::Polynomial, n::Int, prime::Int)
-    n < 0 && error("No negative power")
-    out = one(p)
-    for _ in 1:n
-        out *= p
-        out = mod(out, prime)
-    end
-    return out
-end
+pow_mod(p::Polynomial, n::Int, prime::Int) = PolynomialModP(p, prime)^n
