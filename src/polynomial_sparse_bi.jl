@@ -24,7 +24,7 @@ struct PolynomialSparseBI <: Polynomial
     terms::Vector{Term{BigInt}}
 
     # Inner constructor of 0 polynomial
-    PolynomialSparseBI() = new([zero(Term{BigInt})])
+    PolynomialSparseBI() = new([])
 
     # Inner constructor of polynomial based on arbitrary list of terms
     function PolynomialSparseBI(vt::Vector{Term{BigInt}})
@@ -84,4 +84,39 @@ function pop!(p::PolynomialSparse)::Term
     end
 
     return popped_term
+end
+
+##################################################################
+# Operations with two objects where at least one is a polynomial #
+##################################################################
+
+"""
+Take the mod of a sparse big int polynomial with an integer and convert to machine int.
+"""
+function mod(f::PolynomialSparseBI, p::Integer)::PolynomialSparse
+    f_out = PolynomialSparse()
+    for i in 1:length(f.terms)
+        term = mod(f.terms[i], p)
+        !iszero(term) && push!(f_out, term)
+    end
+    return trim!(f_out)
+
+    # p_out = Polynomial()
+    # for t in f
+    #     new_term = mod(t, p)
+    #     @show new_term
+    #     push!(p_out, new_term)
+    # end
+    # return p_out
+end
+
+"""
+Take the symmetric mod of a sparse big int polynomial with an integer.
+"""
+function smod(f::PolynomialSparseBI, p::Integer)::PolynomialSparseBI
+    f_out = PolynomialSparseBI()
+    for i in 1:length(f.terms)
+        push!(f_out, smod(f.terms[i], p))
+    end
+    return trim!(f_out)
 end

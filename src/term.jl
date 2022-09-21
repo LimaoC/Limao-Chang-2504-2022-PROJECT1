@@ -110,9 +110,15 @@ Multiply two terms.
 *(t1::Term, t2::Term)::Term = Term(t1.coeff * t2.coeff, t1.degree + t2.degree)
 
 """
-Compute the symmetric mod of a term with an integer.
+Compute the mod of a term with an integer.
 """
-mod(t::Term, p::Int) = Term(mod(t.coeff, p), t.degree)
+mod(t::Term, p::Integer) = Term(mod(t.coeff, p), t.degree)
+mod(t::Term{BigInt}, p::Integer) = Term(Int(mod(t.coeff, p)), t.degree)
+
+"""
+Compute the symmetric mod of a term with an integer, returning a big int term.
+"""
+smod(t::Term, p::Integer)::Term{BigInt} = Term(smod(big(t.coeff), p), t.degree)
 
 """
 Compute the derivative of a term.

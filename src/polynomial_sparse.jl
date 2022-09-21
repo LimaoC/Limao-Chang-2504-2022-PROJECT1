@@ -22,7 +22,7 @@ struct PolynomialSparse <: Polynomial
     terms::Vector{Term{Int64}}
 
     # Inner constructor of 0 polynomial
-    PolynomialSparse() = new([zero(Term)])
+    PolynomialSparse() = new([])
 
     # Inner constructor of polynomial based on arbitrary list of terms
     function PolynomialSparse(vt::Vector{Term{Int64}})

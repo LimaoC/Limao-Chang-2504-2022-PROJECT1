@@ -66,14 +66,14 @@ function prod_test_poly_sparse_bi(; N::Int=100, N_prods::Int=20, seed::Int=0)
         @assert leading(prod) == leading(p1) * leading(p2)
     end
 
-    for _ in 1:N
-        p_base = PolynomialSparseBI(Term(1, 0))
-        for _ in 1:N_prods
-            p = rand(PolynomialSparseBI)
-            prod = p_base * p
-            @assert leading(prod) == leading(p_base) * leading(p)
-            p_base = prod
-        end
-    end
+    # for _ in 1:N
+    #     p_base = PolynomialSparseBI(Term(1, 0))
+    #     for _ in 1:N_prods
+    #         p = rand(PolynomialSparseBI)
+    #         prod = p_base * p
+    #         @assert leading(prod) == leading(p_base) * leading(p)
+    #         p_base = prod
+    #     end
+    # end
     println("prod_test_poly_sparse_bi - PASSED")
 end

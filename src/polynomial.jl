@@ -158,7 +158,7 @@ evaluate(f::Polynomial, x::T) where {T<:Number} = sum(evaluate(t, x) for t in f)
 """
 Check if the polynomial is zero.
 """
-iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)]
+iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)] || p.terms == []
 
 #################################################################
 # Transformation of the polynomial to create another polynomial #
@@ -229,8 +229,8 @@ end
 """
 Multiplication of polynomial and an integer.
 """
-*(n::Int, p::Polynomial)::Polynomial = p * Term(n, 0)
-*(p::Polynomial, n::Int)::Polynomial = n * p
+*(n::Integer, p::Polynomial)::Polynomial = p * Term(n, 0)
+*(p::Polynomial, n::Integer)::Polynomial = n * p
 
 """
 Integer division of a polynomial by an integer.
@@ -244,10 +244,11 @@ end
 """
 Take the mod of a polynomial with an integer.
 """
-function mod(f::Polynomial, p::Int)::Polynomial
-    f_out = deepcopy(f)
-    for i in 1:length(f_out.terms)
-        f_out.terms[i] = mod(f_out.terms[i], p)
+function mod(f::P, p::Integer)::P where {P<:Polynomial}
+    f_out = P()
+    for i in 1:length(f.terms)
+        term = mod(f.terms[i], p)
+        !iszero(term) && push!(f_out, term)
     end
     return trim!(f_out)
 
@@ -263,4 +264,12 @@ end
 """
 Power of a polynomial mod prime.
 """
-pow_mod(p::Polynomial, n::Int, prime::Int) = PolynomialModP(p, prime)^n
+function pow_mod(p::Polynomial, n::Int, prime::Int)
+    n < 0 && error("No negative power")
+    out = one(p)
+    for _ in 1:n
+        out *= p
+        out = mod(out, prime)
+    end
+    return out
+end

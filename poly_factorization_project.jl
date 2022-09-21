@@ -6,7 +6,7 @@
 #############################################################################
 #############################################################################
 
-using DataStructures, Distributions, StatsBase, Random
+using DataStructures, Distributions, Primes, StatsBase, Random
 
 import Base: %
 import Base: push!, pop!, iszero, show, isless, map, map!, iterate, length, last
