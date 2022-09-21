@@ -114,7 +114,6 @@ Multiply two terms.
 Compute the mod of a term with an integer.
 """
 mod(t::Term, p::Integer) = Term(mod(t.coeff, p), t.degree)
-mod(t::Term{BigInt}, p::Integer) = Term(Int(mod(t.coeff, p)), t.degree)
 
 """
 Symmetric mod.
