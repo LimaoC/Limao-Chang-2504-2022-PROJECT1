@@ -7,6 +7,15 @@
 #############################################################################
 
 """
+Executes all polynomial factorization tests in this file.
+"""
+function factorization_tests()
+    @time factor_test_poly_dense()
+    @time factor_test_poly_sparse()
+    @time factor_test_poly_sparse_bi()
+end
+
+"""
 Test factorization of dense polynomials.
 """
 function factor_test_poly_dense(;N::Int = 10, seed::Int = 0,

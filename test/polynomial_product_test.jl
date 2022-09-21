@@ -7,6 +7,15 @@
 #############################################################################
 
 """
+Execute all polynomial product tests in this file.
+"""
+function polynomial_product_tests()
+    @time prod_test_poly_dense()
+    @time prod_test_poly_sparse()
+    @time prod_test_poly_sparse_bi()
+end
+
+"""
 Test product of dense polynomials.
 """
 function prod_test_poly_dense(; N::Int=10^3, N_prods::Int=20, seed::Int=0)

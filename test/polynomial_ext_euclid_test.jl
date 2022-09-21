@@ -8,6 +8,15 @@
 #############################################################################
 
 """
+Executes all extended elucid algorithm polynomial tests in this file.
+"""
+function polynomial_ext_euclid_tests()
+    @time ext_euclid_test_poly_dense()
+    @time ext_euclid_test_poly_sparse()
+    @time ext_euclid_test_poly_sparse_bi()
+end
+
+"""
 Test the extended euclid algorithm for dense polynomials modulo p.
 """
 function ext_euclid_test_poly_dense(; prime::Int=101, N::Int=10^3, seed::Int=0)

@@ -15,36 +15,25 @@ include("../poly_factorization_project.jl")
 # Execute unit tests for integers
 ###
 include("integers_test.jl")
-test_euclid_ints()
-test_ext_euclid_ints()
+integers_tests()
 
 ####
-# Execute unit tests for polynomials
+# Execute unit tests for polynomial operations
 ####
 include("polynomial_product_test.jl")
-prod_test_poly_dense()
-prod_test_poly_sparse()
-prod_test_poly_sparse_bi()
+polynomial_product_tests()
 
 include("polynomial_derivative_test.jl")
-prod_derivative_test_poly_dense()
-prod_derivative_test_poly_sparse()
-prod_derivative_test_poly_sparse_bi()
+polynomial_derivative_tests()
 
 include("polynomial_ext_euclid_test.jl")
-ext_euclid_test_poly_dense()
-ext_euclid_test_poly_sparse()
-ext_euclid_test_poly_sparse_bi()
+polynomial_ext_euclid_tests()
 
 include("polynomial_division_test.jl")
-division_test_poly_dense()
-division_test_poly_sparse()
-division_test_poly_sparse_bi()
+polynomial_division_tests()
 
 ####
 # Execute unit tests for polynomial factorization
 ####
 include("factorization_test.jl")
-factor_test_poly_dense()
-factor_test_poly_sparse()
-factor_test_poly_sparse_bi()
+factorization_tests()

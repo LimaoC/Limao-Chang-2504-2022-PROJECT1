@@ -7,6 +7,15 @@
 #############################################################################
 
 """
+Executes all polynomial division tests in this file
+"""
+function polynomial_division_tests()
+    @time division_test_poly_dense()
+    @time division_test_poly_sparse()
+    @time division_test_poly_sparse_bi()
+end
+
+"""
 Test division of dense polynomials modulo p.
 """
 function division_test_poly_dense(; prime::Int=101, N::Int=10^4, seed::Int=0)
