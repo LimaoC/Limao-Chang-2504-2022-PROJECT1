@@ -158,7 +158,7 @@ evaluate(f::Polynomial, x::T) where {T<:Number} = sum(evaluate(t, x) for t in f)
 """
 Check if the polynomial is zero.
 """
-iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)] || p.terms == []
+iszero(p::Polynomial)::Bool = p.terms == [Term(0, 0)] || isempty(p.terms)
 
 #################################################################
 # Transformation of the polynomial to create another polynomial #
@@ -200,7 +200,7 @@ end
 """
 Check if two polynomials are the same.
 """
-==(p1::Polynomial, p2::Polynomial)::Bool = p1.terms == p2.terms
+(==(p1::P, p2::P)::Bool) where {P<:Polynomial} = p1.terms == p2.terms
 
 """
 Check if a polynomial is equal to 0.
@@ -221,7 +221,7 @@ Subtraction of two polynomials.
 """
 Multiplication of polynomial and term.
 """
-(*(t::Term, p1::P)::P) where {P<:Polynomial} = begin
+function *(t::Term, p1::P)::P where {P<:Polynomial}
     iszero(t) ? P() : P(map((pt) -> t * pt, p1.terms))
 end
 *(p1::Polynomial, t::Term)::Polynomial = t * p1
@@ -237,7 +237,7 @@ Integer division of a polynomial by an integer.
 
 Warning this may not make sense if n does not divide all the coefficients of p.
 """
-÷(p::P, n::Int) where {P<:Polynomial} = begin
+function ÷(p::P, n::Int) where {P<:Polynomial}
     (prime) -> P(map((pt) -> ((pt ÷ n)(prime)), p.terms))
 end
 
@@ -251,20 +251,12 @@ function mod(f::P, p::Integer)::P where {P<:Polynomial}
         !iszero(term) && push!(f_out, term)
     end
     return trim!(f_out)
-
-    # p_out = Polynomial()
-    # for t in f
-    #     new_term = mod(t, p)
-    #     @show new_term
-    #     push!(p_out, new_term)
-    # end
-    # return p_out
 end
 
 """
 Power of a polynomial mod prime.
 """
-function pow_mod(p::Polynomial, n::Int, prime::Int)
+function pow_mod(p::Polynomial, n::Int, prime::Int)::Polynomial
     n < 0 && error("No negative power")
     out = one(p)
     for _ in 1:n

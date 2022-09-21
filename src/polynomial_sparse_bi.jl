@@ -58,8 +58,7 @@ Push a new term into the polynomial.
 """
 # Note that ideally this would throw and error if pushing another term of degree that is
 # already in the polynomial
-function push!(p::PolynomialSparseBI, t::Term)
-    t = Term(big(t.coeff), t.degree)  # convert to Term{BigInt} before pushing
+function push!(p::PolynomialSparseBI, t::Term{BigInt})
     if t.degree > degree(p)
         push!(p.terms, t)
     else
@@ -72,6 +71,8 @@ function push!(p::PolynomialSparseBI, t::Term)
     end
     return p
 end
+# convert Term to Term{BigInt} before pushing
+push!(p::PolynomialSparseBI, t::Term) = push!(p, Term(big(t.coeff), t.degree))  
 
 """
 Pop the leading term out of the polynomial.
@@ -100,23 +101,16 @@ function mod(f::PolynomialSparseBI, p::Integer)::PolynomialSparse
         !iszero(term) && push!(f_out, term)
     end
     return trim!(f_out)
-
-    # p_out = Polynomial()
-    # for t in f
-    #     new_term = mod(t, p)
-    #     @show new_term
-    #     push!(p_out, new_term)
-    # end
-    # return p_out
 end
 
 """
-Take the symmetric mod of a sparse big int polynomial with an integer.
+Symmetric mod.
 """
 function smod(f::PolynomialSparseBI, p::Integer)::PolynomialSparseBI
     f_out = PolynomialSparseBI()
     for i in 1:length(f.terms)
-        push!(f_out, smod(f.terms[i], p))
+        term = smod(f.terms[i], p)
+        !iszero(term) && push!(f_out, term)
     end
     return trim!(f_out)
 end

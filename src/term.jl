@@ -23,13 +23,13 @@ struct Term{T<:Integer}  # structs are immutable by default
 end
 
 """
-Creates the zero term.
+Creates the zero term. If no parametric type is specified, the type defaults to Int64.
 """
 zero(::Type{Term})::Term = Term(0, 0)
 (zero(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(0), 0)
 
 """
-Creates the unit term.
+Creates the unit term. If no parametric type is specified, the type defaults to Int64.
 """
 one(::Type{Term})::Term = Term(1, 0)
 (one(::Type{Term{T}})::Term) where {T<:Integer} = Term(T(1), 0)
@@ -45,10 +45,8 @@ show(io::IO, t::Term) = begin
     # omit degree for terms with a degree of 1, omit x for constant terms
     x = t.degree > 1 ? "x^$(t.degree)" : (t.degree == 1 ? "x" : "")
     # omit coefficient if it is ±1, except if it is a constant term
-    coefficient = begin
-        ((t.degree > 0 && abs(t.coeff) != 1) || t.degree == 0) ? t.coeff :
-                                                                 (t.coeff == 1 ? "" : "-")
-    end
+    coefficient = ((t.degree > 0 && abs(t.coeff) != 1) || t.degree == 0) ?
+                  t.coeff : (t.coeff == 1 ? "" : "-")
     print(io, "$coefficient$x")
 end
 
@@ -102,7 +100,10 @@ Negate a term.
 """
 Subtract two terms with the same degree.
 """
--(t1::Term, t2::Term)::Term = t1 + (-t2)
+function -(t1::Term, t2::Term)::Term
+    @assert t1.degree == t2.degree
+    return t1 + (-t2)
+end
 
 """
 Multiply two terms.
@@ -116,9 +117,9 @@ mod(t::Term, p::Integer) = Term(mod(t.coeff, p), t.degree)
 mod(t::Term{BigInt}, p::Integer) = Term(Int(mod(t.coeff, p)), t.degree)
 
 """
-Compute the symmetric mod of a term with an integer, returning a big int term.
+Symmetric mod.
 """
-smod(t::Term, p::Integer)::Term{BigInt} = Term(smod(big(t.coeff), p), t.degree)
+smod(t::Term, p::Integer)::Term = Term(smod(t.coeff, p), t.degree)
 
 """
 Compute the derivative of a term.
