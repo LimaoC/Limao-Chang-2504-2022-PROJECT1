@@ -43,8 +43,7 @@ function +(p::PolynomialSparse, t::Term)
     end
     return trim!(p)
 end
-function +(p::PolynomialSparseBI, t::Term)
-    t = Term(big(t.coeff), t.degree)  # convert to Term{BigInt} before addition
+function +(p::PolynomialSparseBI, t::Term{BigInt})
     p = deepcopy(p)
     if t.degree > degree(p)
         push!(p, t)
@@ -64,6 +63,7 @@ function +(p::PolynomialSparseBI, t::Term)
     end
     return trim!(p)
 end
++(p::PolynomialSparseBI, t::Term) = p + Term(big(t.coeff), t.degree)
 +(p::PolynomialModP, t::Term) = mod(p + mod(t, p.prime), p.prime)
 +(t::Term, p::Polynomial) = p + t
 

@@ -86,31 +86,3 @@ function pop!(p::PolynomialSparse)::Term
 
     return popped_term
 end
-
-##################################################################
-# Operations with two objects where at least one is a polynomial #
-##################################################################
-
-"""
-Take the mod of a sparse big int polynomial with an integer and convert to machine int.
-"""
-function mod(f::PolynomialSparseBI, p::Integer)::PolynomialSparse
-    f_out = PolynomialSparse()
-    for i in 1:length(f.terms)
-        term = mod(f.terms[i], p)
-        !iszero(term) && push!(f_out, term)
-    end
-    return trim!(f_out)
-end
-
-"""
-Symmetric mod.
-"""
-function smod(f::PolynomialSparseBI, p::Integer)::PolynomialSparseBI
-    f_out = PolynomialSparseBI()
-    for i in 1:length(f.terms)
-        term = smod(f.terms[i], p)
-        !iszero(term) && push!(f_out, term)
-    end
-    return trim!(f_out)
-end

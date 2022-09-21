@@ -254,6 +254,18 @@ function mod(f::P, p::Integer)::P where {P<:Polynomial}
 end
 
 """
+Take the symmetric mod of a polynomial with an integer.
+"""
+function smod(f::P, p::Integer)::P where {P<:Polynomial}
+    f_out = P()
+    for i in 1:length(f.terms)
+        term = smod(f.terms[i], p)
+        !iszero(term) && push!(f_out, term)
+    end
+    return trim!(f_out)
+end
+
+"""
 Power of a polynomial mod prime.
 """
 function pow_mod(p::Polynomial, n::Int, prime::Int)::Polynomial

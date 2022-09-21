@@ -23,6 +23,15 @@ struct PolynomialModP <: Polynomial
     end
 end
 
+"""
+Constructor that takes a sparse big int polynomial and converts it to a sparse polynomial
+"""
+function PolynomialModP(p::PolynomialSparseBI, prime::Integer)
+    terms = map((term) -> Term(Int(mod(term.coeff, prime)), term.degree), p.terms)
+    p = PolynomialSparse(terms)
+    return PolynomialModP(p, prime)
+end
+
 ###########
 # Display #
 ###########
