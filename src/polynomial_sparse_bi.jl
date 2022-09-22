@@ -60,7 +60,7 @@ Push a new term into the polynomial.
 # already in the polynomial
 function push!(p::PolynomialSparseBI, t::Term{BigInt})
     if t.degree > degree(p)
-        push!(p.terms, t)
+        !iszero(t) && push!(p.terms, t)
     else
         index = findfirst(term -> term.degree >= t.degree, p.terms)
         if index == nothing

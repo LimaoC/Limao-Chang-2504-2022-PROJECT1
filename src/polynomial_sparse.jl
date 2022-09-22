@@ -53,7 +53,7 @@ Push a new term into the polynomial.
 # already in the polynomial
 function push!(p::PolynomialSparse, t::Term)
     if t.degree > degree(p)
-        push!(p.terms, t)
+        !iszero(t) && push!(p.terms, t)
     else
         # find where we should store this term
         index = findfirst(term -> term.degree >= t.degree, p.terms)

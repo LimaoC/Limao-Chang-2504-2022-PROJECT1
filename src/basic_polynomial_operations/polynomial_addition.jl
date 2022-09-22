@@ -24,6 +24,7 @@ function +(p::PolynomialDense, t::Term)
     return trim!(p)
 end
 function +(p::PolynomialSparse, t::Term)
+    iszero(t) && return p
     p = deepcopy(p)
     if t.degree > degree(p)
         push!(p, t)
@@ -44,6 +45,7 @@ function +(p::PolynomialSparse, t::Term)
     return trim!(p)
 end
 function +(p::PolynomialSparseBI, t::Term{BigInt})
+    iszero(t) && return p
     p = deepcopy(p)
     if t.degree > degree(p)
         push!(p, t)

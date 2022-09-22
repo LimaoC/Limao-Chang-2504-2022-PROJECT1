@@ -7,10 +7,16 @@
 #############################################################################
 #############################################################################
 """
+Subtract a term from a polynomial.
+"""
+-(p::Polynomial, t::Term) = p + (-t)
+-(p::PolynomialModP, t::Term) = p.polynomial + (-t)
+
+"""
 Subtract a polynomial from a term.
 """
 -(t::Term, p::Polynomial) = t + (-p)
--(t::Term, p::Polynomial) = t + (-p.polynomial)
+-(t::Term, p::PolynomialModP) = t + (-p.polynomial)
 
 """
 Subtract an integer from a polynomial.
