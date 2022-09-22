@@ -109,7 +109,7 @@ function ^(p::PolynomialModP, n::Int)::PolynomialModP
     n == 0 && return PolynomialModP(one(PolynomialSparse), p.prime)
 
     out = one(PolynomialSparse)
-    squares = p
+    squares = p.polynomial
     
     # get truncated binary representation of exponent (i.e., most significant bit in string
     # is a 1)

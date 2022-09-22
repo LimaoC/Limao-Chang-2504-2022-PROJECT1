@@ -270,10 +270,25 @@ Power of a polynomial mod prime.
 """
 function pow_mod(p::Polynomial, n::Int, prime::Int)::Polynomial
     n < 0 && error("No negative power")
+    n == 0 && return one(p)
+
     out = one(p)
-    for _ in 1:n
-        out *= p
-        out = mod(out, prime)
+    squares = p
+
+    # get truncated binary representation of exponent (i.e., most significant bit in string
+    # is a 1)
+    n_bin = reverse(bitstring(n)[findfirst('1', bitstring(n)):end])
+    n_bin_length = length(n_bin)
+    # iterate through in reverse order
+    for (i, bit) in enumerate(n_bin)
+        # square each iteration, and if bit is 1, multiply out by current value of squares
+        if parse(Int, bit) == 1
+            out = mod(out * squares, prime)
+        end
+        # don't need to square on the last iteration
+        if i != n_bin_length
+            squares = mod(squares * squares, prime)
+        end
     end
     return out
 end

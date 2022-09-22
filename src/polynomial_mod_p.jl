@@ -57,4 +57,4 @@ pop!(p::PolynomialModP)::Term = pop!(p.polynomial)
 """
 Power of a polynomial mod prime.
 """
-pow_mod(p::PolynomialSparse, n::Int, prime::Int) = PolynomialModP(p, prime)^n
+pow_mod(p::PolynomialSparse, n::Int, prime::Int) = (PolynomialModP(p, prime)^n).polynomial
