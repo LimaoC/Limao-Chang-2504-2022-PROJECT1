@@ -74,7 +74,7 @@ function *(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
 end
 function *(p1::PolynomialModP, p2::PolynomialModP)
     @assert p1.prime == p2.prime
-    return mod(p1.polynomial * p2.polynomial, p1.prime)
+    return mod(p1.polynomial * p2.polynomial, p1.prime)  # note: this returns a PolySparse
 end
 
 """

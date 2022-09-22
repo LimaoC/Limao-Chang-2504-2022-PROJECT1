@@ -138,7 +138,7 @@ leading(p::Polynomial)::Term = isempty(p.terms) ? zero(Term) : last(p.terms)
 """
 Returns the coefficients of the polynomial.
 """
-coeffs(p::Polynomial)::Vector{Int} = [t.coeff for t in p]
+coeffs(p::Polynomial)::Vector{Integer} = [t.coeff for t in p]
 
 """
 The degree of the polynomial.
@@ -189,7 +189,7 @@ prim_part(p::Polynomial) = p ÷ content(p)
 """
 A square free polynomial.
 """
-square_free(p::Polynomial, prime::Int)::Polynomial = begin
+function square_free(p::Polynomial, prime::Int)::Polynomial
     (p ÷ gcd(p, derivative(p), prime))(prime)
 end
 
