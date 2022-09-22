@@ -32,6 +32,9 @@ polynomial_ext_euclid_tests()
 include("polynomial_division_test.jl")
 polynomial_division_tests()
 
+include("polynomial_overflow_test.jl")
+polynomial_overflow_tests()
+
 ####
 # Execute unit tests for polynomial factorization
 ####
