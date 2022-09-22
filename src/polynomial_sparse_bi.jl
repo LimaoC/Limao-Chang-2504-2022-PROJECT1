@@ -64,7 +64,11 @@ function push!(p::PolynomialSparseBI, t::Term{BigInt})
     else
         index = findfirst(term -> term.degree >= t.degree, p.terms)
         if index != nothing
-            p.terms[index] = t
+            if p.terms[index].degree == t.degree
+                p.terms[index] = t
+            else
+                insert!(p.terms, index, t)
+            end
         else
             insert!(p.terms, 1, t)
         end
