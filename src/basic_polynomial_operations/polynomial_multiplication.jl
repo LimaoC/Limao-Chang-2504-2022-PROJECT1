@@ -66,11 +66,13 @@ function *(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
     height_p1 = maximum(map(term -> abs(term.coeff), p1.terms))
     height_p2 = maximum(map(term -> abs(term.coeff), p2.terms))
 
+    # calculate bound for product of primes
     B = big(2) * height_p1 * height_p2 * min(length(p1.terms) + 1, length(p2.terms) + 1)
     p = 3
-    M = big(p)
+    M = big(p)  # product of primes
     c = (PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)).polynomial
 
+    # repeatedly calculate poly_crt's until we have hit the bound B
     while M < B
         p = nextprime(p+1)
         c_prime = (PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)).polynomial

@@ -35,6 +35,9 @@ function PolynomialModP(p::PolynomialSparseBI, prime::Integer)
     return PolynomialModP(p, prime)
 end
 
+one(::Type{PolynomialModP}, prime::Int) = PolynomialModP(PolynomialSparse(one(Term)), prime)
+one(p::Polynomial, prime::Int) = one(typeof(p), prime)
+
 ###########
 # Display #
 ###########
@@ -125,7 +128,7 @@ end
 """
 The prim part (multiply a polynomial by the inverse of its content).
 """
-prim_part(p::PolynomialModP) = prim_part(p.polynomial)
+prim_part(p::PolynomialModP) = PolynomialModP(prim_part(p.polynomial)(p.prime), p.prime)
 
 """
 A square free polynomial.
@@ -161,7 +164,7 @@ Subtraction of two polynomials.
 """
 function -(p1::PolynomialModP, p2::PolynomialModP)::PolynomialModP
     @assert p1.prime == p2.prime
-    p1.polynomial + (-p2.polynomial)
+    PolynomialModP(p1.polynomial + (-p2.polynomial), p1.prime)
 end
 
 """
@@ -183,12 +186,13 @@ Integer division of a polynomial by an integer.
 
 Warning this may not make sense if n does not divide all the coefficients of p.
 """
-÷(p::PolynomialModP, n::Int) = PolynomialModP(÷(p.polynomial, n), p.prime)
+÷(p::PolynomialModP, n::Int) = PolynomialModP(÷(p.polynomial, n)(p.prime), p.prime)
 
 """
 Power of a polynomial mod prime.
 """
 pow_mod(p::PolynomialSparse, n::Int, prime::Int) = (PolynomialModP(p, prime)^n).polynomial
+pow_mod(p::PolynomialModP, n::Int) = PolynomialModP(pow_mod(p.polynomial, n, p.prime), p.prime)
 
 """
 Generate a random polynomial.

@@ -51,8 +51,43 @@ function factor(f::P, prime::Int)::Vector{Tuple{Polynomial,Int}} where {P<:Polyn
 
     return ret_val
 end
-factor(f::PolynomialModP)::Vector{Tuple{Polynomial,Int}} = factor(f.polynomial, f.prime)
+function factor(f::PolynomialModP)::Vector{Tuple{Polynomial,Int}}
+    # Cantor Zassenhaus factorization
 
+    degree(f) <= 1 && return [(f, 1)]
+
+    # make f primitive
+    ff = prim_part(f)
+    # @show "after prim:", ff
+
+    # make f square-free
+    squares_poly = PolynomialModP(gcd(f, derivative(ff)), f.prime)
+    ff = PolynomialModP((ff ÷ squares_poly), f.prime)
+    # @show "after square free:", ff
+
+    # make f monic
+    old_coeff = leading(ff).coeff
+    ff = (ff ÷ old_coeff)
+    # @show "after monic:", ff
+
+    dds = dd_factor(ff)
+
+    ret_val = Tuple{Polynomial,Int}[]
+
+    for (k, dd) in enumerate(dds)
+        sp = dd_split(dd, k, f.prime)
+        # makes the polynomials inside the list sp, monic
+        sp = map((p) -> (p ÷ leading(p).coeff)(f.prime), sp)
+        for mp in sp
+            push!(ret_val, (mp, multiplicity(f.polynomial, mp, f.prime)))
+        end
+    end
+
+    # Append the leading coefficient as well
+    push!(ret_val, (leading(f).coeff * one(PolynomialModP, f.prime), 1))
+
+    return ret_val
+end
 """
 Expand a factorization.
 """
@@ -94,6 +129,7 @@ function dd_factor(f::P, prime::Int)::Array{Polynomial} where {P<:Polynomial}
 
     return g
 end
+dd_factor(f::PolynomialModP) = dd_factor(f.polynomial, f.prime)
 
 """
 Distinct degree split.

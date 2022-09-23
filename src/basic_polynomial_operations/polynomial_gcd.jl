@@ -33,3 +33,7 @@ end
 The GCD of two polynomials modulo prime.
 """
 gcd(a::Polynomial, b::Polynomial, prime::Int) = extended_euclid_alg(a, b, prime) |> first
+function gcd(a::PolynomialModP, b::PolynomialModP)
+    @assert a.prime == b.prime
+    return (extended_euclid_alg(a, b, a.prime) |> first)
+end
