@@ -10,9 +10,9 @@
 Executes all polynomial division tests in this file
 """
 function polynomial_division_tests()
-    @time division_test_poly_dense()
-    @time division_test_poly_sparse()
-    @time division_test_poly_sparse_bi()
+    division_test_poly_dense()
+    division_test_poly_sparse()
+    division_test_poly_sparse_bi()
 end
 
 """

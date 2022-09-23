@@ -11,10 +11,10 @@
 Executes all extended elucid algorithm polynomial tests in this file.
 """
 function polynomial_ext_euclid_tests()
-    @time ext_euclid_test_poly_dense()
-    @time ext_euclid_test_poly_sparse()
-    @time ext_euclid_test_poly_sparse_bi()
-    @time ext_euclid_test_poly_mod_p()
+    ext_euclid_test_poly_dense()
+    ext_euclid_test_poly_sparse()
+    ext_euclid_test_poly_sparse_bi()
+    ext_euclid_test_poly_mod_p()
 end
 
 """
@@ -71,7 +71,8 @@ function ext_euclid_test_poly_mod_p(; prime::Int=101, N::Int=10^3, seed::Int=0)
         g = PolynomialModP(g, prime)
         s = PolynomialModP(s, prime)
         t = PolynomialModP(t, prime)
-        @assert mod(s * p1 + t * p2 - g, prime) == 0
+        # @assert mod(s * p1 + t * p2 - g, prime) == 0
+        @assert s * p1 + t * p2 - g == 0
     end
     println("ext_euclid_test_poly_mod_p - PASSED")
 end

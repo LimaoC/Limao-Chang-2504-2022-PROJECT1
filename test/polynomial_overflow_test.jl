@@ -14,11 +14,11 @@ function polynomial_overflow_tests()
     # test erroring and exiting
 
     # poly_sparse_overflow()
-    @time poly_sparse_bi_overflow()
+    poly_sparse_bi_overflow()
     # poly_sparse_underflow()
-    @time poly_sparse_bi_underflow()
+    poly_sparse_bi_underflow()
     # poly_sparse_prod_overflow()
-    @time poly_sparse_bi_prod_overflow()
+    poly_sparse_bi_prod_overflow()
 end
 
 """

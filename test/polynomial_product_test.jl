@@ -10,10 +10,10 @@
 Execute all polynomial product tests in this file.
 """
 function polynomial_product_tests()
-    @time prod_test_poly_dense()
-    @time prod_test_poly_sparse()
-    @time prod_test_poly_sparse_bi()
-    @time prod_test_poly_mod_p()
+    prod_test_poly_dense()
+    prod_test_poly_sparse()
+    prod_test_poly_sparse_bi()
+    prod_test_poly_mod_p()
 end
 
 """
@@ -67,7 +67,7 @@ end
 """
 Test product of sparse big int polynomials.
 """
-function prod_test_poly_sparse_bi(; N::Int=100, N_prods::Int=20, seed::Int=0)
+function prod_test_poly_sparse_bi(; N::Int=50, N_prods::Int=20, seed::Int=0)
     Random.seed!(seed)
     for _ in 1:N
         p1 = rand(PolynomialSparseBI)

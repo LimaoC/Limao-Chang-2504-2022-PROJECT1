@@ -11,9 +11,9 @@
 Execute all polynomial derivative (and product) tests in this file.
 """
 function polynomial_derivative_tests()
-    @time prod_derivative_test_poly_dense()
-    @time prod_derivative_test_poly_sparse()
-    @time prod_derivative_test_poly_sparse_bi()
+    prod_derivative_test_poly_dense()
+    prod_derivative_test_poly_sparse()
+    prod_derivative_test_poly_sparse_bi()
 end
 
 """

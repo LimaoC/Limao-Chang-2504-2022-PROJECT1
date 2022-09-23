@@ -10,9 +10,9 @@
 Executes all polynomial factorization tests in this file.
 """
 function factorization_tests()
-    @time factor_test_poly_dense()
-    @time factor_test_poly_sparse()
-    @time factor_test_poly_sparse_bi()
+    factor_test_poly_dense()
+    factor_test_poly_sparse()
+    factor_test_poly_sparse_bi()
 end
 
 """

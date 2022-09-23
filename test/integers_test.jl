@@ -10,9 +10,9 @@
 Execute all integer tests in this file.
 """
 function integers_tests()
-    @time test_euclid_ints()
-    @time test_ext_euclid_ints()
-    @time test_inverse_mod_ints()
+    test_euclid_ints()
+    test_ext_euclid_ints()
+    test_inverse_mod_ints()
 end
 
 """
