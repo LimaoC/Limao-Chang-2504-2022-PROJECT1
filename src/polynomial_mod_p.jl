@@ -19,6 +19,7 @@ struct PolynomialModP <: Polynomial
 
     # Inner constructor of PolynomialModP
     function PolynomialModP(p::PolynomialSparse, prime::Integer)
+        @assert isprime(prime)
         terms = map((term) -> Term(mod(term.coeff, prime), term.degree), p.terms)
         p = PolynomialSparse(terms)
         return new(p, prime)

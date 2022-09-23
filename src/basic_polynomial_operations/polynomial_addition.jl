@@ -79,7 +79,10 @@ function +(p1::Polynomial, p2::Polynomial)::Polynomial
     end
     return p
 end
-
+function +(p1::PolynomialModP, p2::PolynomialModP)::PolynomialModP
+    @assert p1.prime == p2.prime
+    return PolynomialModP(p1.polynomial + p2.polynomial, p1.prime)
+end
 """
 Add a polynomial and an integer.
 """

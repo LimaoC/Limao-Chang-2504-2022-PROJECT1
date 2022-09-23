@@ -52,6 +52,14 @@ function *(p1::P, p2::P)::Polynomial where {P<:Polynomial}
     end
     return p_out
 end
+function old_mult(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
+    # old multiplication function for benchmarking purposes
+    p_out = PolynomialSparseBI()
+    for t in p1
+        p_out += t * p2
+    end
+    return p_out
+end
 function *(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
     (iszero(p1) || iszero(p2)) && return PolynomialSparseBI()
 
@@ -61,11 +69,11 @@ function *(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
     B = big(2) * height_p1 * height_p2 * min(length(p1.terms) + 1, length(p2.terms) + 1)
     p = 3
     M = big(p)
-    c = PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)
+    c = (PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)).polynomial
 
     while M < B
         p = nextprime(p+1)
-        c_prime = PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)
+        c_prime = (PolynomialModP(mod(p1, p), p) * PolynomialModP(mod(p2, p), p)).polynomial
         c = poly_crt(c, c_prime, M, p)
         M *= p
     end
@@ -74,7 +82,7 @@ function *(p1::PolynomialSparseBI, p2::PolynomialSparseBI)::PolynomialSparseBI
 end
 function *(p1::PolynomialModP, p2::PolynomialModP)
     @assert p1.prime == p2.prime
-    return mod(p1.polynomial * p2.polynomial, p1.prime)  # note: this returns a PolySparse
+    return PolynomialModP(mod(p1.polynomial * p2.polynomial, p1.prime), p1.prime)
 end
 
 """

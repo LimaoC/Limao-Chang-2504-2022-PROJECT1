@@ -40,7 +40,7 @@ function factor(f::P, prime::Int)::Vector{Tuple{Polynomial,Int}} where {P<:Polyn
     for (k, dd) in enumerate(dds)
         sp = dd_split(dd, k, prime)
         # makes the polynomials inside the list sp, monic
-        sp = map((p) -> (p ÷ leading(p).coeff)(prime), sp) 
+        sp = map((p) -> (p ÷ leading(p).coeff)(prime), sp)
         for mp in sp
             push!(ret_val, (mp, multiplicity(f_modp, mp, prime)))
         end
@@ -51,6 +51,7 @@ function factor(f::P, prime::Int)::Vector{Tuple{Polynomial,Int}} where {P<:Polyn
 
     return ret_val
 end
+factor(f::PolynomialModP)::Vector{Tuple{Polynomial,Int}} = factor(f.polynomial, f.prime)
 
 """
 Expand a factorization.
